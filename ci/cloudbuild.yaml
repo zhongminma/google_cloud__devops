@@ -8,5 +8,7 @@ steps:
         echo "Repository: ${REPO_NAME}"
         echo "Branch: ${BRANCH_NAME}"
         echo "Commit ID: ${COMMIT_SHA}"
-options:
-  logging: CLOUD_LOGGING_ONLY
+# options:
+  #logging: CLOUD_LOGGING_ONLY
+
+logsBucket: gs://gcp-devops-ma-bucket
