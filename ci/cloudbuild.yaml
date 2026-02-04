@@ -11,3 +11,4 @@ options:
   logging: GCS_ONLY
 
 logsBucket: gs://gcp-devops-ma-bucket
+timeout: '3600s'
