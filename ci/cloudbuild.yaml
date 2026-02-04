@@ -8,6 +8,6 @@ steps:
         python trigger.py
         echo "=== Finished trigger.py ==="
 options:
-  logging: CLOUD_LOGGING_ONLY
+  logging: GCS_ONLY
 
 logsBucket: gs://gcp-devops-ma-bucket
