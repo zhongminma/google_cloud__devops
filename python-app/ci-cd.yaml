@@ -39,5 +39,6 @@ steps:
 images:
   - 'us-east4-docker.pkg.dev/gcp-devops-ma2026/python-app-image/app-image:v1'
 
+logsBucket: gs://gcp-devops-ma-bucket
 options:
-  loggin: GCS_ONLY
+  logging: GCS_ONLY
