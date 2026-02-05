@@ -8,10 +8,8 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # copy app code
-COPY app.py .
-
-# port used by google 
-ENV PORT=8080
+COPY . .
+EXPOSE 8080
 
 # command to run app
 CMD ["python", "app.py"] 
