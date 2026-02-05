@@ -2,5 +2,9 @@
 
 ## Trigger
 #### add GCP cloudbuild.yaml
-#### add python GCP trigger
+#### add python GCP trigger with timeout option
+
+### Python code with Dockerfile
+#### reference: https://docs.docker.com/guides/python/containerize/
+#### searsch: google cloud build yaml for docker using python
 
