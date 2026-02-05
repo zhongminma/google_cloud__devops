@@ -18,4 +18,4 @@ images:
   - 'us-east4-docker.pkg.dev/gcp-devops-ma2026/python-app-image/app-image:v1'
 
 options:
-  Loggin: GCS_ONLY
+  loggin: GCS_ONLY
