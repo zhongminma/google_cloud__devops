@@ -18,7 +18,6 @@ steps:
           -f docker/Dockerfile \
           -t us-east4-docker.pkg.dev/gcp-devops-ma2026/python-app-image/app-image:v2 \
           .
-        echo "✅ [STEP 1] Build done"
 
   # 3. Deploy to Cloud Run
   - name: 'gcr.io/cloud-builders/gcloud'
@@ -33,11 +32,10 @@ steps:
           --platform=managed \
           --allow-unauthenticated \
           --port=8080
-        echo "✅ [STEP 3] Deployed successfully to Cloud Run!"
 
 # 4. Store the built image in Artifact Registry
 images:
-  - 'us-east4-docker.pkg.dev/gcp-devops-ma2026/python-app-image/app-image:v1'
+  - 'us-east4-docker.pkg.dev/gcp-devops-ma2026/python-app-image/app-image:v2'
 
 logsBucket: gs://gcp-devops-ma-bucket
 options:
