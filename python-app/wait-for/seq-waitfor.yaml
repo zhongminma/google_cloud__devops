@@ -1,0 +1,19 @@
+steps:
+  - id: build
+    name: docker
+    args: ['build', '.']
+
+  - id: unit-test
+    name: python
+    waitFor: ['build']
+    args: ['pytest']
+
+  - id: lint
+    name: python
+    waitFor: ['build']
+    args: ['flake8']
+
+  - id: deploy
+    name: gcloud
+    waitFor: ['unit-test', 'lint']
+    args: ['run', 'deploy']
