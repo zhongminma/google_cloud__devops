@@ -8,4 +8,5 @@
 #### reference: https://docs.docker.com/guides/python/containerize/
 #### searsch: google cloud build yaml for docker using python
 #### deply and run 
+### add permissions
 
