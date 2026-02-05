@@ -1,45 +1,59 @@
 steps:
-  # 1️⃣ Build image (uses python-app/Dockerfile)
-  - name: 'gcr.io/cloud-builders/docker'
-    dir: 'python-app'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        echo "🚀 [STEP 1] Building Docker image..."
-        docker build \
-          -t us-east4-docker.pkg.dev/gcp-devops-ma2026/python-app-image/app-image:v2 \
-          .
-        echo "✅ [STEP 1] Build complete"
-
-  # 2️⃣ Push image to Artifact Registry
-  - name: 'gcr.io/cloud-builders/docker'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        echo "📦 [STEP 2] Pushing image to Artifact Registry..."
-        docker push \
-          us-east4-docker.pkg.dev/gcp-devops-ma2026/python-app-image/app-image:v2
-        echo "✅ [STEP 2] Push complete"
-
-  # 3️⃣ Deploy to Cloud Run
+  # 0) sanity check: make sure Dockerfile exists in the fetched source
   - name: 'gcr.io/cloud-builders/gcloud'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
+        set -euo pipefail
+        echo "🔎 Checking files in /workspace..."
+        ls -la
+        echo "🔎 Checking python-app/ ..."
+        ls -la python-app
+        test -f python-app/Dockerfile
+        echo "✅ Dockerfile exists"
+
+  # 1) Build
+  - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        set -euo pipefail
+        echo "🚀 [STEP 1] Building Docker image..."
+        docker build -t us-east4-docker.pkg.dev/gcp-devops-ma2026/python-app-image/app-image:v2 python-app
+        echo "✅ [STEP 1] Build complete"
+
+  # 2) Push
+  - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        set -euo pipefail
+        echo "📦 [STEP 2] Pushing image..."
+        docker push us-east4-docker.pkg.dev/gcp-devops-ma2026/python-app-image/app-image:v2
+        echo "✅ [STEP 2] Push complete"
+
+  # 3) Deploy (only works after enabling run.googleapis.com)
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        set -euo pipefail
         echo "🚀 [STEP 3] Deploying to Cloud Run..."
         gcloud run deploy python-app \
           --image=us-east4-docker.pkg.dev/gcp-devops-ma2026/python-app-image/app-image:v2 \
           --region=us-east4 \
           --platform=managed \
           --allow-unauthenticated \
-          --port=8080
+          --port=8080 \
+          --quiet
         echo "✅ [STEP 3] Deploy complete"
 
 images:
-  - 'us-east4-docker.pkg.dev/gcp-devops-ma2026/python-app-image/app-image:v2'
+  - us-east4-docker.pkg.dev/gcp-devops-ma2026/python-app-image/app-image:v2
 
 options:
   logging: CLOUD_LOGGING_ONLY
