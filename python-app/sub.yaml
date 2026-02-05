@@ -17,7 +17,7 @@ steps:
         echo "🔎 Checking python-app/ ..."
         ls -la python-app
         test -f python-app/Dockerfile
-        echo "✅ Dockerfile exists"
+        echo "✅ Dockerfile exists" >output/info.txt
 
   # 1️⃣ Build
   - name: 'gcr.io/cloud-builders/docker'
