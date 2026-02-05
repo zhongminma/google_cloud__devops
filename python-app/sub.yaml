@@ -1,0 +1,68 @@
+substitutions:
+  _SERVICE_NAME: python-app
+  _REGION: us-east4
+  _AR_REPO: python-app-image
+  _IMAGE_NAME: app-image
+
+steps:
+  # 0️⃣ sanity check
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        set -euo pipefail
+        echo "🔎 Checking files in /workspace..."
+        ls -la
+        echo "🔎 Checking python-app/ ..."
+        ls -la python-app
+        test -f python-app/Dockerfile
+        echo "✅ Dockerfile exists"
+
+  # 1️⃣ Build
+  - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        set -euo pipefail
+        echo "🚀 [STEP 1] Building Docker image..."
+        docker build \
+          -t $_REGION-docker.pkg.dev/$PROJECT_ID/$_AR_REPO/$_IMAGE_NAME:$SHORT_SHA \
+          python-app
+        echo "✅ [STEP 1] Build complete"
+
+  # 2️⃣ Push
+  - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        set -euo pipefail
+        echo "📦 [STEP 2] Pushing image..."
+        docker push \
+          $_REGION-docker.pkg.dev/$PROJECT_ID/$_AR_REPO/$_IMAGE_NAME:$SHORT_SHA
+        echo "✅ [STEP 2] Push complete"
+
+  # 3️⃣ Deploy
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        set -euo pipefail
+        echo "🚀 [STEP 3] Deploying to Cloud Run..."
+        gcloud run deploy $_SERVICE_NAME \
+          --image=$_REGION-docker.pkg.dev/$PROJECT_ID/$_AR_REPO/$_IMAGE_NAME:$SHORT_SHA \
+          --region=$_REGION \
+          --platform=managed \
+          --allow-unauthenticated \
+          --port=8080 \
+          --quiet
+        echo "✅ [STEP 3] Deploy complete"
+
+images:
+  - $_REGION-docker.pkg.dev/$PROJECT_ID/$_AR_REPO/$_IMAGE_NAME:$SHORT_SHA
+
+options:
+  logging: CLOUD_LOGGING_ONLY
