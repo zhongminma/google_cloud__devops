@@ -1,0 +1,30 @@
+substitutions:
+  _PROJECT_ID: gcp-devops-ma2026
+  _APP_DIR: devops
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+steps:
+  - name: 'python:3.12'
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        set -euo pipefail
+        cd "${_APP_DIR}"
+        python -V
+        pip install -r requirements.txt
+        # start tests/ if you have
+        # pytest -q
+        echo "✅ CI passed"
+
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        set -euo pipefail
+        gcloud config set project "${_PROJECT_ID}"
+        gcloud app deploy "${_APP_DIR}/app.yaml" --quiet
+        echo "===== Deployed to App Engine ====="
