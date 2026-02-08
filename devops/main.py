@@ -3,5 +3,5 @@ app = Flask(__name__)
 
 @app.get("/")
 def home():
-    return "hello python CI/CD v2"
+    return "hello python CI/CD v3"
 
